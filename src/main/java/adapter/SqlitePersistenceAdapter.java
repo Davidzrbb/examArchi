@@ -17,7 +17,5 @@ public class SqlitePersistenceAdapter implements PersistencePort {
     }
 
     @Override
-    public void remove(Task task) {
-
-    }
+    public void remove(Task task) {}
 }
