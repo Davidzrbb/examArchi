@@ -1,11 +1,17 @@
 package domain.functional.service.validation;
 
+import domain.functional.model.Task;
+
 public class TaskValidation {
-    public static boolean validateTitle(String title) {
-        return title != null && !title.isEmpty();
+    public static boolean validateDescription(String description) {
+        return description != null && !description.isEmpty();
     }
 
-    public static boolean validateId(Number id) {
-        return id != null && id.intValue() > 0;
+    public static boolean validateId(Number taskId) {
+        return taskId != null && taskId.intValue() > 0;
+    }
+
+    public static boolean validateTask(Task task) {
+        return task != null && validateDescription(task.getDescription()) && validateId(task.getTaskId());
     }
 }
