@@ -5,7 +5,7 @@ public class TaskValidation {
         return title != null && !title.isEmpty();
     }
 
-    public static boolean validateDescription(String description) {
-        return description != null && !description.isEmpty();
+    public static boolean validateId(Number id) {
+        return id != null && id.intValue() > 0;
     }
 }
