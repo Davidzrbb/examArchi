@@ -2,23 +2,29 @@ package domain.functional.model;
 
 import domain.functional.enums.Status;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Task {
-    private final String taskId = UUID.randomUUID().toString();
+    private Number taskId;
     private String description;
-    private String titre;
-    private String taskList;
     private Status status;
+    private final Date createdAt = new Date();
 
-    public Task(String description, String titre, String taskList, Status status) {
+    public Task(Number taskId, String description, Status status) {
         this.description = description;
-        this.titre = titre;
-        this.taskList = taskList;
         this.status = status;
     }
 
-    public String getTaskId() {
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setTaskId(Number taskId) {
+        this.taskId = taskId;
+    }
+
+    public Number getTaskId() {
         return taskId;
     }
 
@@ -28,22 +34,6 @@ public class Task {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getTitre() {
-        return titre;
-    }
-
-    public void setTitre(String titre) {
-        this.titre = titre;
-    }
-
-    public String getTaskList() {
-        return taskList;
-    }
-
-    public void setTaskList(String taskList) {
-        this.taskList = taskList;
     }
 
     public Status getStatus() {
