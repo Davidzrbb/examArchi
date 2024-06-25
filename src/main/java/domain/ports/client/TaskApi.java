@@ -9,7 +9,7 @@ public interface TaskApi {
 
     void removeTask(Number id) throws Exception;
 
-    List<Task> getAllTasks() throws Exception;
+    List<Task> retrieveAllTasks() throws Exception;
 
     Task markAsDone(Number id) throws Exception;
 }

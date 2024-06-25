@@ -6,7 +6,12 @@ import java.util.List;
 
 public interface PersistencePort {
     List<Task> retrieveAllTasks();
+
     Task save(Task task);
+
     void remove(Task task);
+
     Number getLastTaskId();
+
+    Task markAsDone(Number taskId);
 }
