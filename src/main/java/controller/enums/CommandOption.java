@@ -1,4 +1,4 @@
-package domain.functional.enums;
+package controller.enums;
 
 public enum CommandOption {
     ADD,
