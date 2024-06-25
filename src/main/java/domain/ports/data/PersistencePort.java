@@ -12,8 +12,6 @@ public interface PersistencePort {
     void remove(Task task);
 
     Number getLastTaskId();
-
-    Task markAsDone(Number taskId);
-
+    
     Task findTaskById(Number taskId);
 }
