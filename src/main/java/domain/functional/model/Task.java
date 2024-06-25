@@ -3,7 +3,6 @@ package domain.functional.model;
 import domain.functional.enums.Status;
 
 import java.util.Date;
-import java.util.UUID;
 
 public class Task {
     private Number taskId;
