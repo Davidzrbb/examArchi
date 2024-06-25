@@ -8,4 +8,5 @@ public interface PersistencePort {
     List<Task> retrieveAllTasks();
     Task save(Task task);
     void remove(Task task);
+    Number getLastTaskId();
 }
