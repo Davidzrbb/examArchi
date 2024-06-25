@@ -1,7 +1,7 @@
 package adapter;
 
 import domain.functional.model.Task;
-import domain.port.PersistencePort;
+import domain.ports.data.PersistencePort;
 
 import java.util.List;
 
