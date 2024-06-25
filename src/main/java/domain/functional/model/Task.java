@@ -4,6 +4,7 @@ import domain.functional.enums.Status;
 
 import java.util.Date;
 
+
 public class Task {
     private Number taskId;
     private String description;

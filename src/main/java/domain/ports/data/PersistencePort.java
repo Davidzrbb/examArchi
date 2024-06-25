@@ -1,4 +1,4 @@
-package domain.port;
+package domain.ports.data;
 
 import domain.functional.model.Task;
 
