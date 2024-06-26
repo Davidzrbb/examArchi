@@ -21,7 +21,7 @@ public class TaskService implements TaskApi {
     }
 
     @Override
-    public void createTask(String description) {
+    public boolean createTask(String description) {
         if (!TaskValidation.validateDescription(description)) {
             throw new IllegalArgumentException(INVALID_DESCRIPTION_MESSAGE);
         }
@@ -30,17 +30,20 @@ public class TaskService implements TaskApi {
                 .map(id -> id.intValue() + 1)
                 .orElse(INITIAL_TASK_ID);
         Task task = new Task(nextTaskId, description, Status.TODO);
-        persistencePort.save(task);
+        return persistencePort.save(task);
     }
 
     @Override
-    public void removeTask(Number taskId) {
+    public boolean removeTask(Number taskId) {
         Task task = persistencePort.findTaskById(taskId)
                 .filter(TaskValidation::validateTask)
                 .orElseThrow(() -> new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE));
-        persistencePort.remove(task);
+        if (!persistencePort.remove(task)) {
+            return false;
+        }
         Number lastTaskId = persistencePort.getLastTaskId().orElse(INITIAL_TASK_ID - 1);
         updateTaskIdsAfterRemoval(taskId, lastTaskId);
+        return true;
     }
 
     private void updateTaskIdsAfterRemoval(Number taskId, Number lastTaskId) {
@@ -63,11 +66,11 @@ public class TaskService implements TaskApi {
     }
 
     @Override
-    public void markAsDone(Number id) {
+    public boolean markAsDone(Number id) {
         Task task = persistencePort.findTaskById(id)
                 .filter(TaskValidation::validateTask)
                 .orElseThrow(() -> new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE));
         task.setStatus(Status.DONE);
-        persistencePort.save(task);
+        return persistencePort.save(task);
     }
 }

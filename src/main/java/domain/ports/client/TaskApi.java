@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface TaskApi {
-    void createTask(String description) throws Exception;
+    boolean createTask(String description) throws Exception;
 
-    void removeTask(Number id) throws Exception;
+    boolean removeTask(Number id) throws Exception;
 
     Optional<List<Task>> retrieveAllTasks() throws Exception;
 
-    void markAsDone(Number id) throws Exception;
+    boolean markAsDone(Number id) throws Exception;
 }
