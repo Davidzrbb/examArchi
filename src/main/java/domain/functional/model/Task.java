@@ -8,11 +8,19 @@ public class Task {
     private Number taskId;
     private String description;
     private Status status;
-    private final Date createdAt = new Date();
+    private Date createdAt = new Date();
 
     public Task(Number taskId, String description, Status status) {
+        this.taskId = taskId;
         this.description = description;
         this.status = status;
+    }
+
+    public Task(Number taskId, String description, Status status, Date createdAt) {
+        this.taskId = taskId;
+        this.description = description;
+        this.status = status;
+        this.createdAt = createdAt;
     }
 
     public Date getCreatedAt() {
