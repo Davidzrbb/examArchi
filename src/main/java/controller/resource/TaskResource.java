@@ -1,17 +1,10 @@
 package controller.resource;
+import controller.utils.OptionCreator;
 import org.apache.commons.cli.*;
 
 public class TaskResource {
-    public static Options createOptions() {
-        Options options = new Options();
-        options.addOption("add", "verbose", false, "Enable verbose mode");
-        options.addOption("delete", "input", true, "Specify input file");
-        options.addOption("list", "output", true, "Specify output file");
-        return options;
-    }
-
-    public static void dispatch(String[] args, Options options) {
-
+    public static void dispatch(String[] args) {
+        var options = OptionCreator.createOptions();
         CommandLineParser parser = new DefaultParser();
         try {
             CommandLine cmd = parser.parse(options, args);
