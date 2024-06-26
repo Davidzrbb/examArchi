@@ -18,4 +18,14 @@ public class SqlitePersistenceAdapter implements PersistencePort {
 
     @Override
     public void remove(Task task) {}
+
+    @Override
+    public Number getLastTaskId() {
+        return null;
+    }
+
+    @Override
+    public Task findTaskById(Number taskId) {
+        return null;
+    }
 }
