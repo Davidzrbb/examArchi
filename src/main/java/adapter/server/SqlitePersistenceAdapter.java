@@ -1,11 +1,9 @@
 package adapter.server;
 
-import domain.functional.enums.Status;
 import domain.functional.model.Task;
 import domain.ports.data.PersistencePort;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,20 +23,8 @@ public class SqlitePersistenceAdapter implements PersistencePort {
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select * from tasks");
-            List<Task> tasks = new ArrayList<>();
-            while(rs.next())
-            {
-                Task task = new Task(
-                        rs.getInt("id"),
-                        rs.getString("description"),
-                        Status.valueOf(rs.getString("status")),
-                        new java.util.Date(rs.getDate("createdAt").getTime())
-                );
-                tasks.add(task);
-            }
-            return Optional.of(tasks);
+            return Optional.of(SqlitePersistenceMapper.fromResultSetList(rs));
         } catch (SQLException e) {
-            e.printStackTrace();
             return Optional.empty();
         }
     }
@@ -52,9 +38,7 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             statement.setString(3, task.getStatus().name());
             statement.setDate(4, new java.sql.Date(task.getCreatedAt().getTime()));
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // TODO: manage here}
+        } catch (SQLException ignored) {
         }
     }
 
@@ -64,9 +48,7 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             PreparedStatement statement = connection.prepareStatement("delete from tasks where id is ?");
             statement.setInt(1, task.getTaskId().intValue());
             statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // TODO: manage here
+        } catch (SQLException ignored) {
         }
     }
 
@@ -76,11 +58,9 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             PreparedStatement statement = connection.prepareStatement("select max(id) from tasks");
             ResultSet rs = statement.executeQuery();
             return Optional.of(rs.getInt(0));
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // TODO: manage here
+        } catch (SQLException ignored) {
+            return Optional.empty();
         }
-        return Optional.empty();
     }
 
     @Override
@@ -90,14 +70,8 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             statement.setInt(1, taskId.intValue());
             ResultSet rs = statement.executeQuery();
 
-            return Optional.of(new Task(
-                    rs.getInt("id"),
-                    rs.getString("description"),
-                    Status.valueOf(rs.getString("status")),
-                    new java.util.Date(rs.getDate("createdAt").getTime())
-            ));
+            return Optional.of(SqlitePersistenceMapper.fromResultSet(rs));
         } catch (SQLException e) {
-            e.printStackTrace();
             return Optional.empty();
         }
     }
