@@ -1,9 +1,10 @@
 package testTaskPackage;
 
-import domain.functional.enums.Status;
-import domain.functional.model.Task;
-import domain.functional.service.task_services.TaskService;
-import domain.ports.data.PersistencePort;
+
+import fr.esgi.domain.functional.enums.Status;
+import fr.esgi.domain.functional.model.Task;
+import fr.esgi.domain.functional.service.task_services.TaskService;
+import fr.esgi.domain.ports.data.PersistencePort;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
