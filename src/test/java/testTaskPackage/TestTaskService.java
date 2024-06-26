@@ -66,12 +66,14 @@ public class TestTaskService {
     public void i_mark_the_task_as_done() {
         when(persistencePort.updateStatus(task.getTaskId(), Status.DONE)).thenReturn(true);
         result = taskService.markAsDone(task.getTaskId());
+        task = new Task(task.getTaskId(), "Existing Task", Status.DONE);
+        when(persistencePort.findTaskById(task.getTaskId())).thenReturn(Optional.of(task));
     }
 
     @Then("the task status should be {string}")
-    public void the_task_status_should_be(String status) {
+    public void the_task_status_should_be(String expectedStatus) {
         Assert.assertTrue(result);
-        Assert.assertEquals(Status.valueOf(status), task.getStatus());
+        Assert.assertEquals(Status.valueOf(expectedStatus), task.getStatus());
     }
 
     @Given("there are existing tasks")

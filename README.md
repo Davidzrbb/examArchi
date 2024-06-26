@@ -26,20 +26,28 @@ java -jar ToDoList.jar -[command] [arguments]
 
 ### Add
 ```bash
-java -jar ToDoList.jar -add [task description]
+java -jar ToDoList.jar -a myTask
 ```
 
 ### List
 ```bash
 java -jar ToDoList.jar -l
 ```
+### Mark as done
+```bash
+java -jar ToDoList.jar -m 6
+```
+### Check if the task is done
+```bash
+java -jar ToDoList.jar -l
+```
 
 ### Remove
 ```bash
-java -jar ToDoList.jar -d [task number]
+java -jar ToDoList.jar -d 6
 ```
 
-### Mark as done
+### Check if the task is removed
 ```bash
-java -jar ToDoList.jar -m [task number]
+java -jar ToDoList.jar -l
 ```
