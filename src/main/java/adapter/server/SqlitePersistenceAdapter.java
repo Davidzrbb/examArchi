@@ -15,14 +15,14 @@ public class SqlitePersistenceAdapter implements PersistencePort {
         Connection connection = DriverManager.getConnection(connectionString);
         this.connection = connection;
         Statement statement = connection.createStatement();
-        statement.executeUpdate("create table if not exists tasks (id integer, description string, status string, createdAt date)");
+        statement.executeUpdate("create table if not exists tasks (id integer, description string, status string, createdAt datetime)");
     }
 
     @Override
     public Optional<List<Task>> retrieveAllTasks() {
         try {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("select * from tasks");
+            ResultSet rs = statement.executeQuery("select * from tasks order by createdAt desc");
             return Optional.of(SqlitePersistenceMapper.fromResultSetList(rs));
         } catch (SQLException e) {
             return Optional.empty();
@@ -36,7 +36,7 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             statement.setInt(1, task.getTaskId().intValue());
             statement.setString(2, task.getDescription());
             statement.setString(3, task.getStatus().name());
-            statement.setDate(4, new java.sql.Date(task.getCreatedAt().getTime()));
+            statement.setTimestamp(4, java.sql.Timestamp.valueOf(task.getCreatedAt()));
             statement.executeUpdate();
             return true;
         } catch (SQLException ignored) {

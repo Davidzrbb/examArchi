@@ -5,6 +5,7 @@ import domain.functional.model.Task;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class SqlitePersistenceMapper {
         return new Task(resultSet.getInt("id"),
                 resultSet.getString("description"),
                 Status.valueOf(resultSet.getString("status")),
-                new java.util.Date(resultSet.getDate("createdAt").getTime()));
+                resultSet.getTimestamp("createdAt").toLocalDateTime());
     }
 
     public static List<Task> fromResultSetList(ResultSet resultSet) throws SQLException {
