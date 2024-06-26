@@ -7,6 +7,7 @@ import domain.ports.data.PersistencePort;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SqlitePersistenceAdapter implements PersistencePort {
 
@@ -20,7 +21,7 @@ public class SqlitePersistenceAdapter implements PersistencePort {
     }
 
     @Override
-    public List<Task> retrieveAllTasks() {
+    public Optional<List<Task>> retrieveAllTasks() {
         try {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select * from tasks");
@@ -35,15 +36,15 @@ public class SqlitePersistenceAdapter implements PersistencePort {
                 );
                 tasks.add(task);
             }
-            return tasks;
+            return Optional.of(tasks);
         } catch (SQLException e) {
             e.printStackTrace();
-            return new ArrayList<>();
+            return Optional.empty();
         }
     }
 
     @Override
-    public Task save(Task task) {
+    public void save(Task task) {
         try {
             PreparedStatement statement = connection.prepareStatement("insert into tasks values (?, ?, ?, ?);");
             statement.setInt(1, task.getTaskId().intValue());
@@ -51,11 +52,9 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             statement.setString(3, task.getStatus().name());
             statement.setDate(4, new java.sql.Date(task.getCreatedAt().getTime()));
             statement.executeUpdate();
-            return task;
         } catch (SQLException e) {
             e.printStackTrace();
-            // TODO: manage here
-            return task;
+            // TODO: manage here}
         }
     }
 
@@ -72,34 +71,34 @@ public class SqlitePersistenceAdapter implements PersistencePort {
     }
 
     @Override
-    public Number getLastTaskId() {
+        public Optional<Number> getLastTaskId() {
         try {
             PreparedStatement statement = connection.prepareStatement("select max(id) from tasks");
             ResultSet rs = statement.executeQuery();
-            rs.getInt(0);
+            return Optional.of(rs.getInt(0));
         } catch (SQLException e) {
             e.printStackTrace();
             // TODO: manage here
         }
-        return 0;
+        return Optional.empty();
     }
 
     @Override
-    public Task findTaskById(Number taskId) {
+    public Optional<Task> findTaskById(Number taskId) {
         try {
             PreparedStatement statement = connection.prepareStatement("select from tasks where id is ?");
             statement.setInt(1, taskId.intValue());
             ResultSet rs = statement.executeQuery();
 
-            return new Task(
+            return Optional.of(new Task(
                     rs.getInt("id"),
                     rs.getString("description"),
                     Status.valueOf(rs.getString("status")),
                     new java.util.Date(rs.getDate("createdAt").getTime())
-            );
+            ));
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return Optional.empty();
         }
     }
 }

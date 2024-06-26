@@ -3,15 +3,16 @@ package domain.ports.data;
 import domain.functional.model.Task;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PersistencePort {
-    List<Task> retrieveAllTasks();
+    Optional<List<Task>> retrieveAllTasks();
 
-    Task save(Task task);
+    void save(Task task);
 
     void remove(Task task);
 
-    Number getLastTaskId();
+    Optional<Number> getLastTaskId();
     
-    Task findTaskById(Number taskId);
+    Optional<Task> findTaskById(Number taskId);
 }
