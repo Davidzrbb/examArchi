@@ -30,7 +30,7 @@ public class SqlitePersistenceAdapter implements PersistencePort {
     }
 
     @Override
-    public void save(Task task) {
+    public boolean save(Task task) {
         try {
             PreparedStatement statement = connection.prepareStatement("insert into tasks values (?, ?, ?, ?);");
             statement.setInt(1, task.getTaskId().intValue());
@@ -38,26 +38,31 @@ public class SqlitePersistenceAdapter implements PersistencePort {
             statement.setString(3, task.getStatus().name());
             statement.setDate(4, new java.sql.Date(task.getCreatedAt().getTime()));
             statement.executeUpdate();
+            return true;
         } catch (SQLException ignored) {
+            return false;
         }
     }
 
     @Override
-    public void remove(Task task) {
+    public boolean remove(Task task) {
         try {
             PreparedStatement statement = connection.prepareStatement("delete from tasks where id is ?");
             statement.setInt(1, task.getTaskId().intValue());
             statement.executeUpdate();
+            return true;
         } catch (SQLException ignored) {
+            return false;
         }
     }
 
     @Override
-        public Optional<Number> getLastTaskId() {
+    public Optional<Number> getLastTaskId() {
         try {
             PreparedStatement statement = connection.prepareStatement("select max(id) from tasks");
             ResultSet rs = statement.executeQuery();
-            return Optional.of(rs.getInt(0));
+            int id = rs.getInt(1);
+            return Optional.of(id);
         } catch (SQLException ignored) {
             return Optional.empty();
         }

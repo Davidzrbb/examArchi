@@ -8,9 +8,9 @@ import java.util.Optional;
 public interface PersistencePort {
     Optional<List<Task>> retrieveAllTasks();
 
-    void save(Task task);
+    boolean save(Task task);
 
-    void remove(Task task);
+    boolean remove(Task task);
 
     Optional<Number> getLastTaskId();
     
