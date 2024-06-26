@@ -38,26 +38,7 @@ public class TaskService implements TaskApi {
         Task task = persistencePort.findTaskById(taskId)
                 .filter(TaskValidation::validateTask)
                 .orElseThrow(() -> new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE));
-        if (!persistencePort.remove(task)) {
-            return false;
-        }
-        Number lastTaskId = persistencePort.getLastTaskId().orElse(INITIAL_TASK_ID - 1);
-        updateTaskIdsAfterRemoval(taskId, lastTaskId);
-        return true;
-    }
-
-    private void updateTaskIdsAfterRemoval(Number taskId, Number lastTaskId) {
-        int taskIdValue = taskId.intValue();
-        int lastTaskIdValue = lastTaskId.intValue();
-        if (lastTaskIdValue > taskIdValue) {
-            for (int i = taskIdValue + 1; i <= lastTaskIdValue; i++) {
-                int index = i;
-                persistencePort.findTaskById(i).ifPresent(taskToUpdate -> {
-                    taskToUpdate.setTaskId(index - 1);
-                    persistencePort.save(taskToUpdate);
-                });
-            }
-        }
+        return persistencePort.remove(task);
     }
 
     @Override
@@ -70,7 +51,6 @@ public class TaskService implements TaskApi {
         Task task = persistencePort.findTaskById(id)
                 .filter(TaskValidation::validateTask)
                 .orElseThrow(() -> new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE));
-        task.setStatus(Status.DONE);
-        return persistencePort.save(task);
+        return persistencePort.updateStatus(task.getTaskId(), Status.DONE);
     }
 }

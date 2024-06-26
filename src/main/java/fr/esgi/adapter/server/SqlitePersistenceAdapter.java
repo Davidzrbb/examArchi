@@ -1,5 +1,6 @@
 package fr.esgi.adapter.server;
 
+import fr.esgi.domain.functional.enums.Status;
 import fr.esgi.domain.functional.model.Task;
 import fr.esgi.domain.ports.data.PersistencePort;
 
@@ -45,6 +46,19 @@ public class SqlitePersistenceAdapter implements PersistencePort {
     }
 
     @Override
+    public boolean updateStatus(Number id, Status status) {
+        try {
+            PreparedStatement statement = connection.prepareStatement("update tasks set status = ? where id = ?;");
+            statement.setString(1, status.name());
+            statement.setInt(2, id.intValue());
+            statement.executeUpdate();
+            return true;
+        } catch (SQLException ignored) {
+            return false;
+        }
+    }
+
+    @Override
     public boolean remove(Task task) {
         try {
             PreparedStatement statement = connection.prepareStatement("delete from tasks where id is ?");
@@ -71,7 +85,7 @@ public class SqlitePersistenceAdapter implements PersistencePort {
     @Override
     public Optional<Task> findTaskById(Number taskId) {
         try {
-            PreparedStatement statement = connection.prepareStatement("select from tasks where id is ?");
+            PreparedStatement statement = connection.prepareStatement("select * from tasks where id is ?");
             statement.setInt(1, taskId.intValue());
             ResultSet rs = statement.executeQuery();
 

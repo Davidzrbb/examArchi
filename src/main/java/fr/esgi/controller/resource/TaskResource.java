@@ -51,11 +51,12 @@ public class TaskResource {
     }
 
     public void create(CommandLine cmd) {
-        if (isGotOneArguments(cmd.getArgs()))
+        if (isGotOneValue(cmd.getArgs())) {
             System.err.println("Invalid number of arguments for add command.");
+            System.exit(1);
+        }
         try {
-            System.out.println(cmd.getArgs()[0]);
-            boolean created = taskApi.createTask(cmd.getArgs()[0]);
+            boolean created = taskApi.createTask(cmd.getOptionValue("a"));
             if (created) {
                 System.out.println("Task created successfully.");
             } else {
@@ -68,10 +69,12 @@ public class TaskResource {
     }
 
     public void remove(CommandLine cmd) {
-        if (isGotOneArguments(cmd.getArgs()))
+        if (isGotOneValue(cmd.getArgs())) {
             System.err.println("Invalid number of arguments for delete command.");
+            System.exit(1);
+        }
         try {
-            boolean delete = taskApi.removeTask(Integer.parseInt(cmd.getArgs()[0]));
+            boolean delete = taskApi.removeTask(Integer.parseInt(cmd.getOptionValue("d")));
             if (delete) {
                 System.out.println("Task deleted successfully.");
             } else {
@@ -84,10 +87,12 @@ public class TaskResource {
     }
 
     public void markAsDone(CommandLine cmd) {
-        if (isGotOneArguments(cmd.getArgs()))
+        if (isGotOneValue(cmd.getArgs())) {
             System.err.println("Invalid number of arguments for done command.");
+            System.exit(1);
+        }
         try {
-            boolean doneTask = taskApi.markAsDone(Integer.parseInt(cmd.getArgs()[0]));
+            boolean doneTask = taskApi.markAsDone(Integer.parseInt(cmd.getOptionValue("m")));
             if (doneTask) {
                 System.out.println("Task marked as done.");
             } else {
@@ -100,8 +105,6 @@ public class TaskResource {
     }
 
     public void retrieveAllTasks(CommandLine cmd) {
-        if (isGotZeroArguments(cmd.getArgs()))
-            System.err.println("Invalid number of arguments for list command.");
         try {
             Optional<List<Task>> listTask = taskApi.retrieveAllTasks();
             boolean isPresent = listTask.isPresent();

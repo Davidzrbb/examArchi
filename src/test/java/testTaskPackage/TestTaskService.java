@@ -64,7 +64,7 @@ public class TestTaskService {
 
     @When("I mark the task as done")
     public void i_mark_the_task_as_done() {
-        when(persistencePort.save(any(Task.class))).thenReturn(true);
+        when(persistencePort.updateStatus(task.getTaskId(), Status.DONE)).thenReturn(true);
         result = taskService.markAsDone(task.getTaskId());
     }
 
