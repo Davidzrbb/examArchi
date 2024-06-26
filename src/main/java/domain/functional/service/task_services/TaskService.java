@@ -7,6 +7,7 @@ import domain.ports.client.TaskApi;
 import domain.ports.data.PersistencePort;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TaskService implements TaskApi {
     private final PersistencePort persistencePort;
@@ -20,24 +21,25 @@ public class TaskService implements TaskApi {
     }
 
     @Override
-    public Task createTask(String description) {
+    public void createTask(String description) {
         if (!TaskValidation.validateDescription(description)) {
             throw new IllegalArgumentException(INVALID_DESCRIPTION_MESSAGE);
         }
-        Number taskId = persistencePort.getLastTaskId();
-        Number nextTaskId = (TaskValidation.validateId(taskId)) ? taskId.intValue() + 1 : INITIAL_TASK_ID;
+        Number nextTaskId = persistencePort.getLastTaskId()
+                .filter(TaskValidation::validateId)
+                .map(id -> id.intValue() + 1)
+                .orElse(INITIAL_TASK_ID);
         Task task = new Task(nextTaskId, description, Status.TODO);
-        return persistencePort.save(task);
+        persistencePort.save(task);
     }
 
     @Override
     public void removeTask(Number taskId) {
-        Task task = persistencePort.findTaskById(taskId);
-        if (!TaskValidation.validateTask(task)) {
-            throw new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE);
-        }
+        Task task = persistencePort.findTaskById(taskId)
+                .filter(TaskValidation::validateTask)
+                .orElseThrow(() -> new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE));
         persistencePort.remove(task);
-        Number lastTaskId = persistencePort.getLastTaskId();
+        Number lastTaskId = persistencePort.getLastTaskId().orElse(INITIAL_TASK_ID - 1);
         updateTaskIdsAfterRemoval(taskId, lastTaskId);
     }
 
@@ -46,27 +48,26 @@ public class TaskService implements TaskApi {
         int lastTaskIdValue = lastTaskId.intValue();
         if (lastTaskIdValue > taskIdValue) {
             for (int i = taskIdValue + 1; i <= lastTaskIdValue; i++) {
-                Task taskToUpdate = persistencePort.findTaskById(i);
-                if (taskToUpdate != null) {
-                    taskToUpdate.setTaskId(i - 1);
+                int index = i;
+                persistencePort.findTaskById(i).ifPresent(taskToUpdate -> {
+                    taskToUpdate.setTaskId(index - 1);
                     persistencePort.save(taskToUpdate);
-                }
+                });
             }
         }
     }
 
     @Override
-    public List<Task> retrieveAllTasks() {
+    public Optional<List<Task>> retrieveAllTasks() {
         return persistencePort.retrieveAllTasks();
     }
 
     @Override
-    public Task markAsDone(Number id) {
-        Task task = persistencePort.findTaskById(id);
-        if (!TaskValidation.validateTask(task)) {
-            throw new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE);
-        }
+    public void markAsDone(Number id) {
+        Task task = persistencePort.findTaskById(id)
+                .filter(TaskValidation::validateTask)
+                .orElseThrow(() -> new IllegalArgumentException(TASK_DOES_NOT_EXIST_MESSAGE));
         task.setStatus(Status.DONE);
-        return persistencePort.save(task);
+        persistencePort.save(task);
     }
 }
