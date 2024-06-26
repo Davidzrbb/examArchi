@@ -2,13 +2,14 @@ package domain.functional.model;
 
 import domain.functional.enums.Status;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Task {
     private Number taskId;
     private String description;
     private Status status;
-    private Date createdAt = new Date();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public Task(Number taskId, String description, Status status) {
         this.taskId = taskId;
@@ -16,14 +17,14 @@ public class Task {
         this.status = status;
     }
 
-    public Task(Number taskId, String description, Status status, Date createdAt) {
+    public Task(Number taskId, String description, Status status, LocalDateTime createdAt) {
         this.taskId = taskId;
         this.description = description;
         this.status = status;
         this.createdAt = createdAt;
     }
 
-    public Date getCreatedAt() {
+    public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
